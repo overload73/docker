@@ -1,6 +1,10 @@
 version: "3.6"
 
 services:
+  # Based on https://github.com/firecat53/dockerfiles/tree/master/openvpn-client-pia
+  # pia_port port is writting in /home/docker/pia/pia_port
+  # before building :
+  #   chmod 655 port_forward.sh
   vpn:
     container_name: vpn
     image: openvpn-client
@@ -50,14 +54,16 @@ services:
       - PGID=1001
     network_mode: "service:vpn"
     restart: always
-
-  deluge:
+    
+  # Based on : https://github.com/firecat53/dockerfiles/tree/master/deluge
+  deluge:    
     image: deluge:latest
     container_name: deluge
     depends_on:
       - vpn
     volumes:
       - /home/docker/deluge/config:/config
+      - /home/docker/pia:/var/run/pia/
       - /mnt/downloads:/data
       - /etc/localtime:/etc/localtime:ro
     environment:
